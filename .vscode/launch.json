@@ -1,0 +1,45 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "ai_demo_features",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "ai_demo_features (profile mode)",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "ai_demo_features (release mode)",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release"
+        },
+        {
+            "name": "ai_chat_sdk",
+            "cwd": "packages\\ai_chat_sdk",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "ai_chat_sdk (profile mode)",
+            "cwd": "packages\\ai_chat_sdk",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "ai_chat_sdk (release mode)",
+            "cwd": "packages\\ai_chat_sdk",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release"
+        }
+    ]
+}

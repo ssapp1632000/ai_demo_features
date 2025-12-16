@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:intl/intl.dart';
 import '../../models/chart_data.dart' as models;
 import '../../ai_chat_theme.dart';
 
@@ -54,11 +55,11 @@ class _ColumnChartWidgetState extends State<ColumnChartWidget> {
             height: 250,
             child: LayoutBuilder(
               builder: (context, constraints) {
-                const leftAxisReserved = 40.0; // reservedSize for left axis
-                final chartHeight = constraints.maxHeight - 20;
-                final drawingWidth = constraints.maxWidth - leftAxisReserved;
+                // const leftAxisReserved = 40.0; // reservedSize for left axis
+                // final chartHeight = constraints.maxHeight - 20;
+                // final drawingWidth = constraints.maxWidth - leftAxisReserved;
                 final maxY = _getMaxY();
-                final barCount = widget.data.bars.length;
+                // final barCount = widget.data.bars.length;
 
                 return Stack(
                   children: [
@@ -72,9 +73,7 @@ class _ColumnChartWidgetState extends State<ColumnChartWidget> {
                           enabled: true,
                           touchCallback: (FlTouchEvent event, barTouchResponse) {
                             setState(() {
-                              if (!event.isInterestedForInteractions ||
-                                  barTouchResponse == null ||
-                                  barTouchResponse.spot == null) {
+                              if (!event.isInterestedForInteractions || barTouchResponse == null || barTouchResponse.spot == null) {
                                 touchedIndex = -1;
                                 return;
                               }
@@ -85,50 +84,59 @@ class _ColumnChartWidgetState extends State<ColumnChartWidget> {
                         titlesData: FlTitlesData(
                           show: true,
                           bottomTitles: AxisTitles(
+                            axisNameSize: 30,
                             axisNameWidget: widget.data.xAxisLabel.isNotEmpty
-                                ? Padding(
-                                    padding: const EdgeInsets.only(top: 8),
-                                    child: Text(
-                                      widget.data.xAxisLabel,
-                                      style: TextStyle(
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.bold,
-                                        color: widget.isDarkMode
-                                            ? Colors.white70
-                                            : Colors.black54,
-                                      ),
-                                    ),
-                                  )
-                                : null,
-                            sideTitles: const SideTitles(showTitles: false),
-                          ),
-                          leftTitles: AxisTitles(
-                            axisNameWidget: widget.data.yAxisLabel.isNotEmpty
-                                ? Padding(
-                                    padding: const EdgeInsets.only(right: 8),
-                                    child: Text(
-                                      widget.data.yAxisLabel,
-                                      style: TextStyle(
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.bold,
-                                        color: widget.isDarkMode
-                                            ? Colors.white70
-                                            : Colors.black54,
-                                      ),
+                                ? Text(
+                                    widget.data.xAxisLabel,
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.bold,
+                                      color: widget.isDarkMode ? Colors.white70 : Colors.black54,
                                     ),
                                   )
                                 : null,
                             sideTitles: SideTitles(
+                                showTitles: true,
+                                reservedSize: 60,
+                                getTitlesWidget: (value, meta) {
+                                  // make rotation 90 degrees
+                                  return RotatedBox(
+                                    quarterTurns: 1,
+                                    child: Text(
+                                      DateFormat('MM/dd/yyyy').tryParse(widget.data.bars[value.toInt()].label) != null
+                                          ? DateFormat('MM/dd/yyyy').format(DateTime.parse(widget.data.bars[value.toInt()].label))
+                                          : widget.data.bars[value.toInt()].label,
+                                      style: TextStyle(
+                                          fontSize: 8, fontWeight: FontWeight.bold, color: widget.isDarkMode ? Colors.white70 : Colors.black87),
+                                    ),
+                                  );
+                                }),
+                          ),
+                          leftTitles: AxisTitles(
+                            axisNameWidget: widget.data.yAxisLabel.isNotEmpty
+                                ? Text(
+                                    widget.data.yAxisLabel,
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.bold,
+                                      color: widget.isDarkMode ? Colors.white70 : Colors.black54,
+                                    ),
+                                  )
+                                : null,
+                            axisNameSize: 20,
+                            sideTitles: SideTitles(
                               showTitles: true,
-                              reservedSize: 40,
+                              reservedSize: 30,
                               getTitlesWidget: (value, meta) {
-                                return Text(
-                                  value.toInt().toString(),
-                                  style: TextStyle(
-                                    fontSize: 11,
-                                    color: widget.isDarkMode
-                                        ? Colors.white70
-                                        : Colors.black87,
+                                return Padding(
+                                  padding: const EdgeInsets.only(left: 8),
+                                  child: Text(
+                                    value.toInt().toString(),
+                                    style: TextStyle(
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.bold,
+                                      color: widget.isDarkMode ? Colors.white70 : Colors.black87,
+                                    ),
                                   ),
                                 );
                               },
@@ -147,9 +155,7 @@ class _ColumnChartWidgetState extends State<ColumnChartWidget> {
                           horizontalInterval: maxY / 5,
                           getDrawingHorizontalLine: (value) {
                             return FlLine(
-                              color: widget.isDarkMode
-                                  ? Colors.grey[700]!
-                                  : Colors.grey[300]!,
+                              color: widget.isDarkMode ? Colors.grey[700]! : Colors.grey[300]!,
                               strokeWidth: 1,
                             );
                           },
@@ -158,14 +164,10 @@ class _ColumnChartWidgetState extends State<ColumnChartWidget> {
                           show: true,
                           border: Border(
                             left: BorderSide(
-                              color: widget.isDarkMode
-                                  ? Colors.grey[700]!
-                                  : Colors.grey[400]!,
+                              color: widget.isDarkMode ? Colors.grey[700]! : Colors.grey[400]!,
                             ),
                             bottom: BorderSide(
-                              color: widget.isDarkMode
-                                  ? Colors.grey[700]!
-                                  : Colors.grey[400]!,
+                              color: widget.isDarkMode ? Colors.grey[700]! : Colors.grey[400]!,
                             ),
                           ),
                         ),
@@ -173,45 +175,45 @@ class _ColumnChartWidgetState extends State<ColumnChartWidget> {
                       ),
                     ),
                     // Centered labels inside each bar
-                    ...widget.data.bars.asMap().entries.map((entry) {
-                      final index = entry.key;
-                      final bar = entry.value;
-                      final barHeightRatio = bar.value / maxY;
-                      final barHeight = barHeightRatio * chartHeight;
+                    // ...widget.data.bars.asMap().entries.map((entry) {
+                    //   final index = entry.key;
+                    //   final bar = entry.value;
+                    //   final barHeightRatio = bar.value / maxY;
+                    //   final barHeight = barHeightRatio * chartHeight;
 
-                      // Skip label if bar too short
-                      if (barHeight < 30) return const SizedBox.shrink();
+                    //   // Skip label if bar too short
+                    //   if (barHeight < 30) return const SizedBox.shrink();
 
-                      // Calculate bar center using spaceAround formula
-                      // spaceAround distributes: space-bar-space-bar-space
-                      // Bar center = drawingWidth * (2*index + 1) / (2 * barCount)
-                      final barCenterX = leftAxisReserved + drawingWidth * (2 * index + 1) / (2 * barCount);
-                      const labelWidth = 20.0;
-                      final left = barCenterX - labelWidth / 2;
-                      final top = chartHeight - barHeight;
+                    //   // Calculate bar center using spaceAround formula
+                    //   // spaceAround distributes: space-bar-space-bar-space
+                    //   // Bar center = drawingWidth * (2*index + 1) / (2 * barCount)
+                    //   final barCenterX = leftAxisReserved + drawingWidth * (2 * index + 1) / (2 * barCount);
+                    //   const labelWidth = 20.0;
+                    //   final left = barCenterX - labelWidth / 2;
+                    //   final top = chartHeight - barHeight;
 
-                      return Positioned(
-                        left: left,
-                        top: top,
-                        width: labelWidth,
-                        height: barHeight,
-                        child: Container(
-                          alignment: Alignment.center,
-                          child: RotatedBox(
-                            quarterTurns: -1,
-                            child: Text(
-                              bar.label,
-                              style: const TextStyle(
-                                color: Colors.black87,
-                                fontSize: 11,
-                                fontWeight: FontWeight.w600,
-                              ),
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                        ),
-                      );
-                    }),
+                    //   return Positioned(
+                    //     left: left,
+                    //     top: top,
+                    //     width: labelWidth,
+                    //     height: barHeight,
+                    //     child: Container(
+                    //       alignment: Alignment.center,
+                    //       child: RotatedBox(
+                    //         quarterTurns: -1,
+                    //         child: Text(
+                    //           bar.label,
+                    //           style: const TextStyle(
+                    //             color: Colors.black87,
+                    //             fontSize: 11,
+                    //             fontWeight: FontWeight.w600,
+                    //           ),
+                    //           overflow: TextOverflow.ellipsis,
+                    //         ),
+                    //       ),
+                    //     ),
+                    //   );
+                    // }),
                   ],
                 );
               },
@@ -224,9 +226,7 @@ class _ColumnChartWidgetState extends State<ColumnChartWidget> {
 
   double _getMaxY() {
     if (widget.data.bars.isEmpty) return 100;
-    final maxValue = widget.data.bars
-        .map((bar) => bar.value)
-        .reduce((a, b) => a > b ? a : b);
+    final maxValue = widget.data.bars.map((bar) => bar.value).reduce((a, b) => a > b ? a : b);
     // Add 20% padding to the top
     return (maxValue * 1.2).ceilToDouble();
   }
@@ -242,9 +242,7 @@ class _ColumnChartWidgetState extends State<ColumnChartWidget> {
         barRods: [
           BarChartRodData(
             toY: bar.value,
-            color: isTouched
-                ? widget.theme.primaryColor
-                : widget.theme.primaryColor.withValues(alpha: 0.8),
+            color: isTouched ? widget.theme.primaryColor : widget.theme.primaryColor.withValues(alpha: 0.8),
             width: isTouched ? 24 : 20,
             borderRadius: const BorderRadius.only(
               topLeft: Radius.circular(6),
@@ -253,9 +251,7 @@ class _ColumnChartWidgetState extends State<ColumnChartWidget> {
             backDrawRodData: BackgroundBarChartRodData(
               show: true,
               toY: _getMaxY(),
-              color: widget.isDarkMode
-                  ? Colors.grey[800]!.withValues(alpha: 0.3)
-                  : Colors.grey[300]!.withValues(alpha: 0.3),
+              color: widget.isDarkMode ? Colors.grey[800]!.withValues(alpha: 0.3) : Colors.grey[300]!.withValues(alpha: 0.3),
             ),
           ),
         ],

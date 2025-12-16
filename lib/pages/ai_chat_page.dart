@@ -26,6 +26,9 @@ class ChatMessage {
   final ChartType? chartType;
   final ChartData? chartData;
   final ClarifyResponseData? clarificationData;
+  final String? rawReport;
+
+  bool get hasRawReport => rawReport != null && rawReport!.isNotEmpty;
 
   ChatMessage({
     required this.text,
@@ -34,6 +37,7 @@ class ChatMessage {
     this.chartType,
     this.chartData,
     this.clarificationData,
+    this.rawReport,
   });
 
   // Parse message from JSON (for AI responses with charts)
@@ -115,6 +119,19 @@ class _AIChatPageState extends State<AIChatPage>
 
   // Track if user is typing (to disable clarification choices)
   bool _isUserTyping = false;
+
+  // Track which messages are expanded (for "More details" / "Show less")
+  final Set<int> _expandedMessages = {};
+
+  void _toggleMessageDetails(int index) {
+    setState(() {
+      if (_expandedMessages.contains(index)) {
+        _expandedMessages.remove(index);
+      } else {
+        _expandedMessages.add(index);
+      }
+    });
+  }
 
   @override
   void initState() {
@@ -228,6 +245,7 @@ class _AIChatPageState extends State<AIChatPage>
                 timestamp: DateTime.now(),
                 chartType: chartType,
                 chartData: chartData,
+                rawReport: answerData.rawReport,
               ),
             );
           } else {
@@ -962,10 +980,34 @@ class _AIChatPageState extends State<AIChatPage>
                                     ),
                                   ],
                                 )
-                              : _buildMessageText(
-                                  message.text,
-                                  message.isUser,
-                                  theme,
+                              : Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    _buildMessageText(
+                                      _expandedMessages.contains(messageIndex) && message.hasRawReport
+                                          ? message.rawReport!
+                                          : message.text,
+                                      message.isUser,
+                                      theme,
+                                    ),
+                                    if (!message.isUser && message.hasRawReport)
+                                      GestureDetector(
+                                        onTap: () => _toggleMessageDetails(messageIndex),
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(top: 10),
+                                          child: Text(
+                                            _expandedMessages.contains(messageIndex) ? 'Show less' : 'More details',
+                                            style: TextStyle(
+                                              color: AppColors.primary,
+                                              fontSize: 13,
+                                              fontWeight: FontWeight.w500,
+                                              decoration: TextDecoration.underline,
+                                              decorationColor: AppColors.primary,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                  ],
                                 ),
                         ),
                   // Timestamp for non-chart messages

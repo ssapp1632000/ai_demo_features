@@ -178,9 +178,7 @@ class _AiChatScreenState extends State<AiChatScreen> {
 
             if (answerData.hasChart) {
               try {
-                final chartTypeStr = answerData.chartType == 'bar'
-                    ? 'column'
-                    : answerData.chartType!;
+                final chartTypeStr = answerData.chartType == 'bar' ? 'column' : answerData.chartType!;
                 chartType = ChartTypeExtension.fromString(chartTypeStr);
                 chartData = ChartData.fromJson(
                   answerData.chartData!,
@@ -196,9 +194,7 @@ class _AiChatScreenState extends State<AiChatScreen> {
             debugPrint('Has rawReport: ${answerData.rawReport != null}');
             debugPrint('rawReport length: ${answerData.rawReport?.length ?? 0}');
             if (answerData.rawReport != null && answerData.rawReport!.isNotEmpty) {
-              final preview = answerData.rawReport!.length > 100
-                  ? answerData.rawReport!.substring(0, 100)
-                  : answerData.rawReport!;
+              final preview = answerData.rawReport!.length > 100 ? answerData.rawReport!.substring(0, 100) : answerData.rawReport!;
               debugPrint('rawReport preview: $preview...');
             } else {
               debugPrint('rawReport is NULL or EMPTY - "More details" link will NOT appear');
@@ -289,9 +285,7 @@ class _AiChatScreenState extends State<AiChatScreen> {
             Expanded(
               child: Container(
                 decoration: BoxDecoration(
-                  color: isDark
-                      ? _theme.backgroundColor
-                      : _theme.backgroundColor,
+                  color: isDark ? _theme.backgroundColor : _theme.backgroundColor,
                 ),
                 child: ListView.builder(
                   controller: _scrollController,
@@ -379,9 +373,7 @@ class _AiChatScreenState extends State<AiChatScreen> {
     return Padding(
       padding: const EdgeInsets.only(bottom: 16),
       child: Row(
-        mainAxisAlignment: message.isUser
-            ? MainAxisAlignment.end
-            : MainAxisAlignment.start,
+        mainAxisAlignment: message.isUser ? MainAxisAlignment.end : MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           if (!message.isUser) ...[
@@ -461,25 +453,19 @@ class _AiChatScreenState extends State<AiChatScreen> {
           ],
           Flexible(
             child: GestureDetector(
-              onLongPress: !message.isUser
-                  ? () => setState(() => _selectedMessageIndex = messageIndex)
-                  : null,
+              onLongPress: !message.isUser ? () => setState(() => _selectedMessageIndex = messageIndex) : null,
               child: Column(
-                crossAxisAlignment: message.isUser
-                    ? CrossAxisAlignment.end
-                    : CrossAxisAlignment.start,
+                crossAxisAlignment: message.isUser ? CrossAxisAlignment.end : CrossAxisAlignment.start,
                 children: [
                   repaintKey != null
-                      ? _buildChartMessage(
-                          repaintKey, message, theme, isDark, isSelected, messageIndex)
+                      ? _buildChartMessage(repaintKey, message, theme, isDark, isSelected, messageIndex)
                       : _buildTextMessage(message, theme, isDark, messageIndex),
                   if (repaintKey == null && _config.showTimestamps) ...[
                     const SizedBox(height: 4),
                     Text(
                       DateFormat('h:mm a').format(message.timestamp),
                       style: TextStyle(
-                        color: theme.textTheme.bodySmall?.color
-                            ?.withValues(alpha: 0.6),
+                        color: theme.textTheme.bodySmall?.color?.withValues(alpha: 0.6),
                         fontSize: 11,
                       ),
                     ),
@@ -566,14 +552,10 @@ class _AiChatScreenState extends State<AiChatScreen> {
                   bottomLeft: Radius.circular(4),
                   bottomRight: Radius.circular(16),
                 ),
-                border: isSelected
-                    ? Border.all(color: _theme.primaryColor, width: 2)
-                    : null,
+                border: isSelected ? Border.all(color: _theme.primaryColor, width: 2) : null,
                 boxShadow: [
                   BoxShadow(
-                    color: isSelected
-                        ? _theme.primaryColor.withValues(alpha: 0.3)
-                        : Colors.black.withValues(alpha: 0.1),
+                    color: isSelected ? _theme.primaryColor.withValues(alpha: 0.3) : Colors.black.withValues(alpha: 0.1),
                     blurRadius: isSelected ? 8 : 4,
                     offset: const Offset(0, 2),
                   ),
@@ -592,21 +574,20 @@ class _AiChatScreenState extends State<AiChatScreen> {
                 ],
               ),
             ),
-              if (_config.showTimestamps)
-                Padding(
-                  padding: const EdgeInsets.only(left: 16, top: 4, bottom: 8),
-                  child: Text(
-                    DateFormat('h:mm a').format(message.timestamp),
-                    style: TextStyle(
-                      color: theme.textTheme.bodySmall?.color
-                          ?.withValues(alpha: 0.6),
-                      fontSize: 11,
-                    ),
+            if (_config.showTimestamps)
+              Padding(
+                padding: const EdgeInsets.only(left: 16, top: 4, bottom: 8),
+                child: Text(
+                  DateFormat('h:mm a').format(message.timestamp),
+                  style: TextStyle(
+                    color: theme.textTheme.bodySmall?.color?.withValues(alpha: 0.6),
+                    fontSize: 11,
                   ),
                 ),
-            ],
-          ),
+              ),
+          ],
         ),
+      ),
     );
   }
 
@@ -617,16 +598,12 @@ class _AiChatScreenState extends State<AiChatScreen> {
     int messageIndex,
   ) {
     final isExpanded = _expandedMessages.contains(messageIndex);
-    final displayText = isExpanded && message.hasRawReport
-        ? message.rawReport!
-        : message.text;
+    final displayText = isExpanded && message.hasRawReport ? message.rawReport! : message.text;
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
-        color: message.isUser
-            ? _theme.userBubbleColor
-            : (isDark ? _theme.cardColorDark : _theme.aiBubbleColor),
+        color: message.isUser ? _theme.userBubbleColor : (isDark ? _theme.cardColorDark : _theme.aiBubbleColor),
         borderRadius: BorderRadius.only(
           topLeft: const Radius.circular(16),
           topRight: const Radius.circular(16),
@@ -645,8 +622,7 @@ class _AiChatScreenState extends State<AiChatScreen> {
           ? Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                if (message.text.isNotEmpty)
-                  _buildMessageText(displayText, message.isUser, theme),
+                if (message.text.isNotEmpty) _buildMessageText(displayText, message.isUser, theme),
                 if (message.text.isNotEmpty) const SizedBox(height: 12),
                 ClarificationWidget(
                   data: message.clarificationData!,
@@ -727,17 +703,13 @@ class _AiChatScreenState extends State<AiChatScreen> {
             fontSize: 15,
           ),
           code: TextStyle(
-            backgroundColor: theme.brightness == Brightness.dark
-                ? Colors.grey[800]
-                : Colors.grey[200],
+            backgroundColor: theme.brightness == Brightness.dark ? Colors.grey[800] : Colors.grey[200],
             color: theme.textTheme.bodyLarge?.color,
             fontFamily: 'monospace',
             fontSize: 14,
           ),
           codeblockDecoration: BoxDecoration(
-            color: theme.brightness == Brightness.dark
-                ? Colors.grey[850]
-                : Colors.grey[100],
+            color: theme.brightness == Brightness.dark ? Colors.grey[850] : Colors.grey[100],
             borderRadius: BorderRadius.circular(8),
           ),
           blockquote: TextStyle(
@@ -943,8 +915,7 @@ class _AiChatScreenState extends State<AiChatScreen> {
     ChatMessage message,
   ) async {
     try {
-      RenderRepaintBoundary boundary =
-          repaintKey.currentContext!.findRenderObject() as RenderRepaintBoundary;
+      RenderRepaintBoundary boundary = repaintKey.currentContext!.findRenderObject() as RenderRepaintBoundary;
 
       ui.Image image = await boundary.toImage(pixelRatio: 3.0);
 
